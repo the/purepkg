@@ -66,6 +66,11 @@ func main() {
 				allowed = allowedPkgs.contains(imported)
 			}
 
+			if !allowed && strings.HasSuffix(pkg.PkgPath, ".test") {
+				// allow test packages to import the package under test
+				allowed = strings.TrimSuffix(pkg.PkgPath, ".test") == imported
+			}
+
 			if !allowed || verboseFlag {
 				if printPackage {
 					fmt.Printf("package %s\n", pkg.PkgPath)
