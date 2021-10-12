@@ -18,9 +18,14 @@ const (
 )
 
 func main() {
-	var verboseFlag, allowStdlib bool
+	var (
+		verboseFlag bool
+		allowStdlib bool
+		ignoreTests bool
+	)
 	flag.BoolVar(&verboseFlag, "v", false, "verbose output")
 	flag.BoolVar(&allowStdlib, "stdlib", false, "include all standard library packages")
+	flag.BoolVar(&ignoreTests, "notest", false, "ignore tests")
 
 	var allowedPkgs allowList
 	flag.Var(&allowedPkgs, "allow", "comma separated list of allowed `packages`")
@@ -31,7 +36,10 @@ func main() {
 		flag.Usage()
 	}
 
-	cfg := &packages.Config{Mode: packages.NeedName | packages.NeedImports}
+	cfg := &packages.Config{
+		Mode:  packages.NeedName | packages.NeedImports,
+		Tests: !ignoreTests,
+	}
 	pkgs, err := packages.Load(cfg, flag.Arg(0))
 	if err != nil {
 		log.Fatal(err)
@@ -90,7 +98,7 @@ func isStdlib(name string) bool {
 func usage() {
 	fmt.Fprintf(os.Stderr, "purepkg verifies that only allowed Go packages are imported.\n\n")
 	fmt.Fprintf(os.Stderr, "Usage:\n")
-	fmt.Fprintf(os.Stderr, "  purepkg [-v] [-stdlib] [-allow pkg1,pkg2,...] <package>\n\n")
+	fmt.Fprintf(os.Stderr, "  purepkg [-v] [-stdlib] [-notest] [-allow pkg1,pkg2,...] <package>\n\n")
 	fmt.Fprintf(os.Stderr, "Options:\n")
 	flag.PrintDefaults()
 	os.Exit(usageExitCode)

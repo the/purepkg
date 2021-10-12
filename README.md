@@ -16,17 +16,19 @@ You can install `purepkg` directly from the `main` branch with `go install githu
 ## Usage
 
 ```
-purepkg [-v] [-stdlib] [-allow pkg1,pkg2,...] <package>
+purepkg [-v] [-stdlib] [-notest] [-allow pkg1,pkg2,...] <package>
 
 Options:
   -allow packages
     	comma separated list of allowed packages
+  -notest
+    	ignore tests
   -stdlib
     	include all standard library packages
   -v    verbose output
 ```
 
-When no unallowed package is found `purepkg` exits with exit code `0`. Otherwise it will exit with `2` which can be useful to abort a build process or checks executed in a CI/CD pipeline.
+When no unallowed package is found `purepkg` exits with exit code `0`. Otherwise it will exit with `2` which can be useful to abort a build process or checks executed in a CI/CD pipeline. By default test code is included. Adding the `-notest` argument ignores the tests.
 
 ## Examples
 
